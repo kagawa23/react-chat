@@ -37,9 +37,11 @@ export function registerUser({user, pwd, repeatPwd, type}){
     if(pwd !== repeatPwd){
         return registerFail('密码输入不一致');
     }
-    axios.post('/user/register',{user,pwd,type})
-    .then(resp =>{
-        const data = resp.data;
-        return (dispatch)=>dispatch(registerSuccess(data));
-    })
+    return dispatch => {
+        axios.post('/user/register',{user,pwd,type})
+        .then(resp =>{
+            const data = resp.data;
+            return dispatch(registerSuccess(data));
+        })
+    }
 }
