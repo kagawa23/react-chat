@@ -1,5 +1,7 @@
 const express = require('express')
 const user = require('./user');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 // 新增数据
 // User.create({
 // 	user:'xiaohua',
@@ -19,6 +21,9 @@ const user = require('./user');
 // 	console.log(doc)
 // })
 const app = express()
+
+app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use('/user',user);
 
