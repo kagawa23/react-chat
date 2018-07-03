@@ -7,7 +7,30 @@ mongoose.connection.on('connected',function(){
 })
 
 // 类似于mysql的表 mongo里有文档、字段的概念，
-const User = mongoose.model('user', new mongoose.Schema({
-	user:{type:String,require:true},
-	age:{type:Number,require:true}
-}))
+// const User = mongoose.model('user', new mongoose.Schema({
+// 	user:{type:String,require:true},
+// 	age:{type:Number,require:true}
+// }))
+const models = {
+	user:{ 
+		user:{type:'string',require:true},
+		pwd:{type:'string',require:true},
+		type:{type:'string',require:true},
+		avatar:{type:'string',require:true},
+		desc:{type:'string'},
+		title:{type:'string'},
+		company:{type:'string'},
+		money:{type:'string'},
+	},
+	chat: {}
+}
+
+for(let o in models){
+	mongoose.model(o, new mongoose.Schema(models[o]));
+}
+
+module.exports = {
+	getModel:function(name){
+		return mongoose.model(name)
+	}
+}
