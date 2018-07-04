@@ -25,11 +25,7 @@ class AuthRoute extends Component {
     }
     
     render() {
-        return (
-            <div>
-                <h1>登陆信息</h1>
-            </div>
-        );
+        return null;
     }
 }
 

@@ -5,6 +5,8 @@ const models = require('./model')
 
 const userModel = models.getModel('user');
 
+const utils = require('utility');
+
 Router.get('/list',(req,res) => {
     userModel.find({},(err,doc)=>{
         console.log(doc);
@@ -22,14 +24,22 @@ Router.post('/register',(req,res) => {
         if(doc){
             return res.json({code:1,msg:'用户已存在'})
         }
-        userModel.create({user,pwd,type},function(err,dara){
+        const md5Pwd = getMd5Pwd(pwd);
+        const usr = new userModel({user,type,pwd:md5Pwd})
+
+        usr.save(function(err,data){
             if(err){
                 return res.json({code:1,msg:'后端出错ß'})
             }
-            return res.json({code:0})
+            return res.json({code:0,data});
         })
     });
 
 })
+
+function getMd5Pwd(pwd){
+    const str = "djjdhu32901";
+    return utils.md5(utils.md5(pwd+str));
+}
 
 module.exports = Router;
