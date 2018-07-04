@@ -15,7 +15,8 @@ class Register extends React.Component {
             user:'',
             pwd:'',
             repeatPwd:'',
-            errMsg:''
+            errMsg:'',
+            redirectTo:''
         }
         this.handleRegister = this.handleRegister.bind(this);
     }

@@ -6,6 +6,7 @@ const models = require('./model')
 const userModel = models.getModel('user');
 
 const utils = require('utility');
+const _filter = {'pwd':0,'__v':0}
 
 Router.get('/list',(req,res) => {
     userModel.find({},(err,doc)=>{
@@ -16,6 +17,17 @@ Router.get('/list',(req,res) => {
 
 Router.get('/info',(req,res)=>{
     return res.json({code:0});
+})
+
+Router.post('/login',(req,res) => {
+    const { user, pwd} = req.body;
+    const encryPwd = getMd5Pwd(pwd);
+    userModel.findOne({user,pwd:encryPwd},_filter,function(err,doc){
+        if(err){
+            return res.json({code:1,msg:'用户名密码错误'})
+        }
+        return res.json({code:0,data:doc})
+    })
 })
 
 Router.post('/register',(req,res) => {

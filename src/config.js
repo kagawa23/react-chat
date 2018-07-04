@@ -12,4 +12,8 @@ axios.interceptors.request.use(function(config){
 axios.interceptors.response.use(function(config){
 	Toast.hide()	
 	return config
+},function(err){
+	// console.log(err);
+	 Toast.hide()
+	 return Promise.reject(err);
 })
