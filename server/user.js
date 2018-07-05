@@ -16,7 +16,16 @@ Router.get('/list',(req,res) => {
 })
 
 Router.get('/info',(req,res)=>{
-    return res.json({code:0});
+    const { userId} = req.cookies;
+    if(!userId){
+        return res.json({code:1,msg:"没有cookie"});
+    }
+    userModel.findById(userId,_filter,function(err,doc){
+        if(err){
+            return res.json({code:1,msg:'用户名密码错误'})
+        }
+        return res.json({code:0,data:doc})
+    })
 })
 
 Router.post('/login',(req,res) => {
@@ -26,6 +35,7 @@ Router.post('/login',(req,res) => {
         if(err){
             return res.json({code:1,msg:'用户名密码错误'})
         }
+        res.cookie("userId",doc._id);
         return res.json({code:0,data:doc})
     })
 })
@@ -41,8 +51,9 @@ Router.post('/register',(req,res) => {
 
         usr.save(function(err,data){
             if(err){
-                return res.json({code:1,msg:'后端出错ß'})
+                return res.json({code:1,msg:'后端出错'})
             }
+            res.cookie("userId",data.id);
             return res.json({code:0,data});
         })
     });

@@ -4,6 +4,7 @@ import { getRedirectPath } from '../util'
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 const ERR_MSG = 'ERR_MSG';
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+const LOAD_DATA = "LOAD_DATA";
 
 const initState = {
     isAuth: false,
@@ -22,6 +23,8 @@ export function user(state = initState,action){
             return {...state, errMsg:'',isAuth:true,redirectTo:getRedirectPath(action.data.type, action.data.avatar)};
         case ERR_MSG:
             return {...state, errMsg:action.errMsg};
+        case LOAD_DATA:
+            return {...state,...action.data}
         default:
             return state;
     }
@@ -38,6 +41,11 @@ function registerSuccess(data){
 function loginSuccess(data){
     return {type:LOGIN_SUCCESS, data};
 }
+
+export function loadData(data){
+    return { type:LOAD_DATA,data}
+}
+
 export function loginUser({user,pwd}){
     if( !user || !pwd){
         return registerFail('用户名，密码不为空');
