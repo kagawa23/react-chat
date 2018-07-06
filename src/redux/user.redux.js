@@ -5,9 +5,9 @@ const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 const ERR_MSG = 'ERR_MSG';
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOAD_DATA = "LOAD_DATA";
+const AUTH_SUCCESS = "AUTH_SUCCESS";
 
 const initState = {
-    isAuth: false,
     type:'',
     user:'',
     pwd:'',
@@ -17,10 +17,8 @@ const initState = {
 
 export function user(state = initState,action){
     switch(action.type){
-        case LOGIN_SUCCESS:
-            return {...state, errMsg:'',isAuth:true,redirectTo:getRedirectPath(action.data.type, action.data.avatar)};
-        case REGISTER_SUCCESS:
-            return {...state, errMsg:'',isAuth:true,redirectTo:getRedirectPath(action.data.type, action.data.avatar)};
+        case AUTH_SUCCESS:
+            return {...state, errMsg:'',redirectTo:getRedirectPath(action.data.type, action.data.avatar)};
         case ERR_MSG:
             return {...state, errMsg:action.errMsg};
         case LOAD_DATA:
@@ -34,12 +32,8 @@ function registerFail(errmsg){
     return {type:ERR_MSG, errMsg:errmsg};
 }
 
-function registerSuccess(data){
-    return {type:REGISTER_SUCCESS, data};
-}
-
-function loginSuccess(data){
-    return {type:LOGIN_SUCCESS, data};
+function authSuccess(data){
+    return {type:AUTH_SUCCESS, data};
 }
 
 export function loadData(data){
@@ -55,7 +49,7 @@ export function loginUser({user,pwd}){
         .then(resp => {
             const data = resp.data;
             if( data.code === 0)
-            return dispatch(loginSuccess(data.data));
+            return dispatch(authSuccess(data.data));
             else
             return dispatch(registerFail(data.msg));
         }).catch(err =>{
@@ -77,7 +71,23 @@ export function registerUser({user, pwd, repeatPwd, type}){
         .then(resp =>{
             const data = resp.data;
             if( data.code === 0)
-            return dispatch(registerSuccess(data.data));
+            return dispatch(authSuccess(data.data));
+            else
+            return dispatch(registerFail(data));
+        }).catch((err) =>{
+            console.log(err);
+            return dispatch(registerFail('服务内部错误'));
+        })
+    }
+}
+
+export function updateUser({avatar,title,company,describe}){
+    return dispatch => {
+        axios.post('/user/update',{avatar,title,company,describe})
+        .then(resp =>{
+            const data = resp.data;
+            if( data.code === 0)
+            return dispatch(authSuccess(data.data));
             else
             return dispatch(registerFail(data));
         }).catch((err) =>{

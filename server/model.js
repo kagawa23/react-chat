@@ -17,7 +17,7 @@ const models = {
 		pwd:{type:'string',require:true},
 		type:{type:'string',require:true},
 		avatar:{type:'string',require:true},
-		desc:{type:'string'},
+		describe:{type:'string'},
 		title:{type:'string'},
 		company:{type:'string'},
 		money:{type:'string'},

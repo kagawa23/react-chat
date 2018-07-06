@@ -6,7 +6,7 @@ import { loadData } from '../../redux/user.redux'
 
 @withRouter
 @connect(state => state.user,{ loadData})
-class AuthRoute extends Component {
+class AuthRoute extends React.Component {
     componentDidMount() {
         const publicList = ['/login','/register'];
         const pathname =  this.props.location.pathname 
@@ -17,7 +17,7 @@ class AuthRoute extends Component {
             if(resp.status === 200){
                 console.log(resp.data);
                 const { code,data } = resp.data;
-                if(code == 0){
+                if(code === 0){
                     //登陆成功
                     this.props.loadData(data)
                 }else{

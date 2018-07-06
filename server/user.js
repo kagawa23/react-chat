@@ -28,6 +28,26 @@ Router.get('/info',(req,res)=>{
     })
 })
 
+Router.post('/update',(req,res)=>{
+    const { userId} = req.cookies;
+    if(!userId){
+        return res.json({code:1,msg:"没有cookie"});
+    }
+    const body = req.body;
+
+    userModel.findByIdAndUpdate(userId,body,function(err,doc){
+        if(err){
+            return res.json({code:1,msg:'内部错误'})
+        }
+        const data = Object.assign({},{
+			user:doc.user,
+			type:doc.type
+		},body)
+		return res.json({code:0,data})
+    })
+})
+
+
 Router.post('/login',(req,res) => {
     const { user, pwd} = req.body;
     const encryPwd = getMd5Pwd(pwd);
