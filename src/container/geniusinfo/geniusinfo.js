@@ -13,8 +13,7 @@ class BossInfo extends Component {
             avatar:'',
             title:'',
             company:'',
-            describe:'',
-            money:''
+            describe:''
          }
          this.onChange = this.onChange.bind(this);
          this.handleUpdate = this.handleUpdate.bind(this);
@@ -39,21 +38,15 @@ class BossInfo extends Component {
             <AvatarSelector avatar={this.state.avatar} changeAvatar={this.onChange}/>
             <InputItem
             onChange={(v)=>this.onChange('title',v)}
-          >招聘职位</InputItem>  
-            <InputItem
-            onChange={(v)=>this.onChange('company',v)}
-          >公司名称</InputItem>  
-            <InputItem
-            onChange={(v)=>this.onChange('money',v)}
-          >职位薪资</InputItem>
+          >求职岗位</InputItem>  
         <TextareaItem
-            title="职位要求"
+            title="个人简历"
             autoHeight
             labelNumber={3}
             onChange={(v)=>this.onChange('describe',v)}
           />   
             </List>
-        <Button type="primary"  onClick={this.handleUpdate}>保存</Button>
+        <Button type="primary" onClick={this.handleUpdate}>保存</Button>
         </div> )
     }
 }

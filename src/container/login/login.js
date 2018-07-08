@@ -37,7 +37,7 @@ class Login extends React.Component {
                 <Logo/>
                 <h1>登陆页</h1> 
                 {errMsg?<p className="error-msg">{errMsg}</p>:null}
-             {redirectTo?<Redirect to={redirectTo}/>:null} 
+                {redirectTo && redirectTo !='/login'?<Redirect to={redirectTo}/>:null} 
                 <WingBlank>
                     <InputItem onChange={(v) => this.handleChange("user",v)} >用户名:</InputItem>
                     <WhiteSpace/>

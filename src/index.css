@@ -2,3 +2,10 @@
     color: red;
     padding-left: 10px;
 }
+
+div.am-tab-bar {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: auto;
+}

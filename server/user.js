@@ -8,10 +8,21 @@ const userModel = models.getModel('user');
 const utils = require('utility');
 const _filter = {'pwd':0,'__v':0}
 
+// Router.get('/list',(req,res) => {
+//     userModel.find({},(err,doc)=>{
+//         console.log(doc);
+//         return res.json(doc);
+//     })
+// })
+
 Router.get('/list',(req,res) => {
-    userModel.find({},(err,doc)=>{
+    const { type } = req.query;
+    userModel.find({type},_filter,(err,doc)=>{
+        if(err){
+            return res.json({status:1,msg:"服务器错误"});
+        }
         console.log(doc);
-        return res.json(doc);
+        return res.json({status:0,data:doc});
     })
 })
 
