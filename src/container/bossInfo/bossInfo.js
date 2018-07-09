@@ -4,7 +4,10 @@ import { NavBar,List,InputItem,TextareaItem, Button } from 'antd-mobile';
 import { connect } from 'react-redux';
 import { updateUser } from '../../redux/user.redux'
 import { Redirect } from 'react-router-dom';
+//import {imoocForm } from '../../component/imoocForm/imoocForm'
 
+
+//@imoocForm
 @connect(state => state.user,{ updateUser })
 class BossInfo extends Component {
     constructor(props) {
@@ -16,8 +19,8 @@ class BossInfo extends Component {
             describe:'',
             money:''
          }
-         this.onChange = this.onChange.bind(this);
-         this.handleUpdate = this.handleUpdate.bind(this);
+        this.onChange = this.onChange.bind(this);
+          this.handleUpdate = this.handleUpdate.bind(this);
     }
 
     handleUpdate(){
@@ -31,7 +34,7 @@ class BossInfo extends Component {
         const { redirectTo,location:{pathname} } = this.props;
         
         return ( <div>
-                         {redirectTo && pathname !== redirectTo ?<Redirect to={redirectTo}/>:null}
+             {redirectTo && pathname !== redirectTo ?<Redirect to={redirectTo}/>:null}
     <NavBar
       mode="dark"
     >BOSS完善信息页面</NavBar>
@@ -39,10 +42,10 @@ class BossInfo extends Component {
             <AvatarSelector avatar={this.state.avatar} changeAvatar={this.onChange}/>
             <InputItem
             onChange={(v)=>this.onChange('title',v)}
-          >招聘职位</InputItem>  
+          >招聘职位</InputItem> 
             <InputItem
             onChange={(v)=>this.onChange('company',v)}
-          >公司名称</InputItem>  
+          >公司名称</InputItem> 
             <InputItem
             onChange={(v)=>this.onChange('money',v)}
           >职位薪资</InputItem>
