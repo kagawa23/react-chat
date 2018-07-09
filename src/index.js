@@ -9,6 +9,7 @@ import {
 	Redirect,
 	Switch
 } from 'react-router-dom'
+import Chat from './container/chat/chat';
 
 import reducers from './reducer'
 import Register from './container/register/register';
@@ -63,6 +64,7 @@ ReactDom.render(
 				<Route path='/register' component={Register}></Route>
 				<Route path='/geniusinfo' component={GeniusInfo}></Route>
 				<Route path='/bossinfo' component={BossInfo}></Route>
+				<Route path='/chat/:user' component={Chat}></Route>
 				<Route component={Dashboard}></Route>
 				</Switch>
 			</div>
