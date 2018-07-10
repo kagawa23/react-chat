@@ -7,11 +7,19 @@ const app = express()
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
+const models = require('./model')
+const chatModel = models.getModel('chat');
+
 io.on('connect',function(socket){
 	console.log('connected')
-	socket.on('clientmsg',function(data){
-		console.log(data)
-		io.emit('servermsg',data);
+	socket.on('clientmsg',function({from,to,msg:content}){
+		//console.log(data)
+		const chatId = [from,to].sort().join('_');
+		chatModel.create({chatId,from,to,content},(err,d)=>{
+			if(!err) {
+				io.emit('servermsg',Object.assign({},d._doc));
+			}
+		})	
 	})
 })
 

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 import {List , InputItem} from 'antd-mobile';
-
+import { getChatList,sendMsg,recvMsg } from '../../redux/chat.redux';
+import { connect } from 'react-redux';
 const socket = io('ws://localhost:9093');
 
-
+@connect(state=>state,{getChatList,sendMsg,recvMsg})
 class Chat extends Component {
     constructor(props) {
         super(props);
@@ -12,16 +13,20 @@ class Chat extends Component {
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentDidMount() {
-        socket.on('servermsg',(data) =>{
-            console.log(data);
-            const { dataList } = this.state;
-            this.setState({ dataList: [...dataList,data]  });
-        });
+        this.props.getChatList();
+        this.props.recvMsg();
+        // socket.on('servermsg',(data) =>{
+        //     console.log(data);
+        //     const { dataList } = this.state;
+        //     this.setState({ dataList: [...dataList,data]  });
+        // });
     }
 
     onSubmit(){
-        const {data} = this.state;
-        socket.emit('clientmsg',data);
+        const {data:content} = this.state;
+        const {user:{_id:from}, match:{params:{user:to}}} = this.props;
+        this.props.sendMsg(from,to,content);
+       // socket.emit('clientmsg',data);
         this.setState({ data: '' });
     }
 

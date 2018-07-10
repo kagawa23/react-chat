@@ -4,7 +4,7 @@ const Router = exporess.Router();
 const models = require('./model')
 
 const userModel = models.getModel('user');
-
+const chatModel = models.getModel('chat');
 const utils = require('utility');
 const _filter = {'pwd':0,'__v':0}
 
@@ -23,6 +23,15 @@ Router.get('/list',(req,res) => {
         }
         console.log(doc);
         return res.json({status:0,data:doc});
+    })
+})
+
+Router.get('/chatlist',(req,resp) => {
+    const { userId } = req.cookies;
+    chatModel.find({},(err,doc)=>{
+        if(!err){
+            return resp.json({code:0,data:doc})
+        }
     })
 })
 

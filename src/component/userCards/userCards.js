@@ -8,8 +8,8 @@ class UserCards extends React.Component {
     super(props);
     this.state = {  }
   }
-  handleClick({user}) {
-    this.props.history.push(`/chat/${user}`);
+  handleClick({_id}) {
+    this.props.history.push(`/chat/${_id}`);
   }
   render() { 
     const {userlist:array} = this.props;
