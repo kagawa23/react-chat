@@ -7,8 +7,12 @@ const app = express()
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-io.on('connect',function(data){
+io.on('connect',function(socket){
 	console.log('connected')
+	socket.on('clientmsg',function(data){
+		console.log(data)
+		io.emit('servermsg',data);
+	})
 })
 
 app.use(cookieParser());

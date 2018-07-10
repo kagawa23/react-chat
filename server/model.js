@@ -22,7 +22,13 @@ const models = {
 		company:{type:'string'},
 		money:{type:'string'},
 	},
-	chat: {}
+	chat: {
+		chatId:{type:'string',require:true},
+		from:{type:'string',require:true},
+		to:{type:'string',require:true},
+		content:{type:'string',required:true},
+		createTime:{type:'number',default:new Date().getTime()}
+	}
 }
 
 for(let o in models){
