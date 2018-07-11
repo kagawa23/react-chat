@@ -28,9 +28,17 @@ Router.get('/list',(req,res) => {
 
 Router.get('/chatlist',(req,resp) => {
     const { userId } = req.cookies;
-    chatModel.find({},(err,doc)=>{
+    userModel.find({},_filter,(err,doc)=>{
+        const users = {};
         if(!err){
-            return resp.json({code:0,data:doc})
+            doc.forEach((d)=>{
+                users[d._id] = d;
+            })
+            chatModel.find({"$or":[{from:userId},{to:userId}]},(err,chats)=>{
+                if(!err){
+                    return resp.json({code:0,data:chats,users})
+                }
+            })
         }
     })
 })

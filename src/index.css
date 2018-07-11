@@ -9,3 +9,14 @@ div.am-tab-bar {
     width: 100%;
     height: auto;
 }
+
+.chat-container .chat-right {
+    display: flex;
+    flex-direction: row-reverse;
+
+}
+
+.chat-container .am-list-item.chat-right  .am-list-content{
+    text-align: right;
+    
+}

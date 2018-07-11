@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client';
-import {List , InputItem} from 'antd-mobile';
+import {List , InputItem, NavBar,Icon} from 'antd-mobile';
 import { getChatList,sendMsg,recvMsg } from '../../redux/chat.redux';
 import { connect } from 'react-redux';
-const socket = io('ws://localhost:9093');
+import '../../index.css'
+const Item = List.Item;
 
 @connect(state=>state,{getChatList,sendMsg,recvMsg})
 class Chat extends Component {
@@ -13,7 +13,10 @@ class Chat extends Component {
         this.onSubmit = this.onSubmit.bind(this)
     }
     componentDidMount() {
-        this.props.getChatList();
+        const {chat:{ users}} = this.props
+        if(users.length === 0) {
+            this.props.getChatList();
+        }
         this.props.recvMsg();
         // socket.on('servermsg',(data) =>{
         //     console.log(data);
@@ -31,9 +34,25 @@ class Chat extends Component {
     }
 
     render() { 
-        const {params:{user}} = this.props.match;
-        return ( <div>
-            <h1>{`Chat with:${user}`}</h1>
+        const {params:{user:userId}} = this.props.match;
+        const {chat:{ chatmsg,users}} = this.props
+
+        return ( <div className="chat-container">
+                <NavBar
+                mode="dark"
+                icon={<Icon type="left" />}
+                onLeftClick={() => {this.props.history.goBack()}}
+                >{users[userId] && users[userId].user}</NavBar>
+                <List>
+
+                {    chatmsg.map((v)=>{
+                        const user = users[v.from]
+                        const avatar = require(`../../component/images/avatar/${user.avatar}.png`)
+                        return (v.from === userId?<Item className="chat-right" align="middle" thumb={avatar} multipleLine>
+                                       对方:{v.content}</Item>:<Item className="chat-left"  align="middle" thumb={avatar} multipleLine>
+                                        我:{v.content}</Item>)
+                    })}
+                </List>
             <List>
             <InputItem
             clear
