@@ -16,9 +16,10 @@ const initState = {
 export function chat(state=initState,action) {
     switch (action.type) {
         case MSG_LIST:
-            return {...state, chatmsg:action.payload,users:action.users, unread: action.payload.filter(v=>!v.read).length }
+            return {...state, chatmsg:action.payload,users:action.users, unread: action.payload.filter(v=>!v.read && v.to === action.userId ).length }
         case MSG_RECV:
-            return {...state, chatmsg:[...state.chatmsg,action.payload],unread:state.unread+1};
+            const n = (action.userId === action.payload.to)? 1: 0;
+            return {...state, chatmsg:[...state.chatmsg,action.payload],unread:state.unread+n};
         case MSG_READ:
             return state;
         default:
@@ -26,12 +27,12 @@ export function chat(state=initState,action) {
     }
 }
 
-function chatList(data,users){
-    return {type:MSG_LIST,payload:data,users};
+function chatList(data,users, userId){
+    return {type:MSG_LIST,payload:data,users, userId};
 }
 
-function chatRecv(data) {
-    return {type:MSG_RECV,payload:data}
+function chatRecv(data, userId) {
+    return {type:MSG_RECV,payload:data, userId}
 }
 
 export function sendMsg(from,to, msg){
@@ -41,19 +42,26 @@ export function sendMsg(from,to, msg){
 }
 
 export function recvMsg(){
-    return (dispatch) => {
+    return (dispatch, getState) => {
         socket.on('servermsg',(data)=>{
-            dispatch(chatRecv(data));
+            const {user:{ _id }} = getState();
+            dispatch(chatRecv(data, _id));
         })
     }
 }
 
 export function getChatList(){
-    return (dispatch) => {
+    return (dispatch, getState) => {
         axios.get('/user/chatlist').then(({data:resp})=>{
             if(resp.code === 0){
-                dispatch(chatList(resp.data,resp.users));
+                const {user:{ _id }} = getState();
+               // console.log(user);
+                dispatch(chatList(resp.data,resp.users,_id));
             }
         })
     }
+}
+
+export function getChatId(id1,id2){
+    return [id1,id2].sort().join('_');
 }

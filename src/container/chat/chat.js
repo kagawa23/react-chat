@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {List , InputItem, NavBar,Icon} from 'antd-mobile';
-import { getChatList,sendMsg,recvMsg } from '../../redux/chat.redux';
+import {List , InputItem, NavBar,Icon, Grid} from 'antd-mobile';
+import { getChatList,sendMsg,recvMsg, getChatId } from '../../redux/chat.redux';
 import { connect } from 'react-redux';
 import '../../index.css'
 const Item = List.Item;
@@ -16,26 +16,24 @@ class Chat extends Component {
         const {chat:{ users}} = this.props
         if(users.length === 0) {
             this.props.getChatList();
+            this.props.recvMsg();
         }
-        this.props.recvMsg();
-        // socket.on('servermsg',(data) =>{
-        //     console.log(data);
-        //     const { dataList } = this.state;
-        //     this.setState({ dataList: [...dataList,data]  });
-        // });
     }
 
     onSubmit(){
         const {data:content} = this.state;
         const {user:{_id:from}, match:{params:{user:to}}} = this.props;
         this.props.sendMsg(from,to,content);
-       // socket.emit('clientmsg',data);
         this.setState({ data: '' });
     }
 
     render() { 
         const {params:{user:userId}} = this.props.match;
-        const {chat:{ chatmsg,users}} = this.props
+        const {user:{_id},chat:{ chatmsg:rawmsg,users}} = this.props
+        const chatmsg = rawmsg.filter(v=> v.chatId === getChatId(userId,_id))
+        const emojiList = "😀 😁 😂 🤣 😃 😄 😅 😆 😉 😊 😋 😎 😍 😘 😗 😙 😚 ☺️ 🙂 🤗 🤩 🤔 🤨 😐 😑 😶 🙄 😏 😣 😥 😮 🤐 😯 😪 😫 😴 😌 😛 😜 😝 🤤 😒 😓 😔 😕 🙃 🤑 😲 ☹️ 🙁 😖 😞 😟 😤 😢 😭 😦 😧 😨 😩 🤯 😬 😰 😱 😳 🤪 😵 😡 😠 🤬 😷 🤒 🤕 🤢 🤮 🤧 😇 🤠 🤡 🤥 🤫 🤭 🧐 🤓 😈 👿 👹 👺 💀 👻 👽 🤖 💩 😺 😸 😹 😻 😼 😽 🙀 😿 😾"
+        .split(' ').map(v=>({text:v}));
+
 
         return ( <div className="chat-container">
                 <NavBar
@@ -67,6 +65,9 @@ class Chat extends Component {
                     <p key={v}>{v}</p>
                 )}
             </div>
+
+                <Grid data={emojiList} columnNum={8} isCarousel onClick={_el => {this.setState({ data: this.state.data + _el.text });}} carouselMaxRow={5}/>
+
         </div> )
     }
 }

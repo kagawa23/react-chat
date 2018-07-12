@@ -24,7 +24,6 @@ export function getUserlist(type){
         .then(({data:resp}) => {
             console.log(resp);
             if(resp.status === 0){
-                //this.setState({ data:resp.data  });
                 dispatch(userList(resp.data))
             }
         });

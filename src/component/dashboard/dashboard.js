@@ -12,6 +12,9 @@ import { NavBar } from 'antd-mobile'
 import Boss from '../boss/boss';
 import Genius from '../genius/genius';
 import User from '../me/me';
+import { getChatList,sendMsg,recvMsg, getChatId } from '../../redux/chat.redux';
+
+
 
 function Msg(){
 	return <h2>消息列表页面</h2>
@@ -27,15 +30,24 @@ function Msg(){
 //     return <h2>牛人页面</h2>
 // }
 
-@connect(state=>state)
+@connect(state=>state, { getChatList,recvMsg })
 class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
-    
+    componentDidMount(){
+
+        const {chat:{ users}} = this.props
+        if(users.length === 0) {
+            this.props.getChatList();
+            this.props.recvMsg();
+        }
+        // this.props.getChatList();
+        // this.props.recvMsg();
+    }
     render() { 
-        const { user } = this.props;
+        const { user,chat } = this.props;
         const {pathname} = this.props.location
         const navList = [
             {
@@ -59,7 +71,8 @@ class Dashboard extends Component {
                 select_icon:require('../images/navimg/msg-active.png'),
                 title: "消息",
                 path: "/message",
-                component: Msg
+                component: Msg,
+                badge: chat.unread
             },
             {
                 icon: require('../images/navimg/user.png'),

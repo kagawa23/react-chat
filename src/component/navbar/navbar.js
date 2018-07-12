@@ -31,6 +31,7 @@ class NavLinkTab extends Component {
                                 onPress={() => {
                                     this.props.history.push(d.path)
                                 }}
+                                badge={d.badge}
                             />)
                              })
                              
