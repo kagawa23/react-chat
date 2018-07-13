@@ -15,7 +15,8 @@ io.on('connect',function(socket){
 	socket.on('clientmsg',function({from,to,msg:content}){
 		//console.log(data)
 		const chatId = [from,to].sort().join('_');
-		chatModel.create({chatId,from,to,content},(err,d)=>{
+		const createTime = new Date().getTime();
+		chatModel.create({chatId,from,to,content, createTime},(err,d)=>{
 			if(!err) {
 				io.emit('servermsg',Object.assign({},d._doc));
 			}

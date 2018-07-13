@@ -9,8 +9,9 @@ const Item = List.Item;
 class Chat extends Component {
     constructor(props) {
         super(props);
-        this.state = { data:'',dataList:[] }
+        this.state = { data:'',dataList:[], toggleEmoji:false }
         this.onSubmit = this.onSubmit.bind(this)
+        this.toggleEmoji = this.toggleEmoji.bind(this)
     }
     componentDidMount() {
         const {chat:{ users}} = this.props
@@ -27,9 +28,14 @@ class Chat extends Component {
         this.setState({ data: '' });
     }
 
+    toggleEmoji(){
+        this.setState({ toggleEmoji: !this.state.toggleEmoji });
+    }
+
     render() { 
         const {params:{user:userId}} = this.props.match;
         const {user:{_id},chat:{ chatmsg:rawmsg,users}} = this.props
+        const { toggleEmoji } = this.state;
         const chatmsg = rawmsg.filter(v=> v.chatId === getChatId(userId,_id))
         const emojiList = "😀 😁 😂 🤣 😃 😄 😅 😆 😉 😊 😋 😎 😍 😘 😗 😙 😚 ☺️ 🙂 🤗 🤩 🤔 🤨 😐 😑 😶 🙄 😏 😣 😥 😮 🤐 😯 😪 😫 😴 😌 😛 😜 😝 🤤 😒 😓 😔 😕 🙃 🤑 😲 ☹️ 🙁 😖 😞 😟 😤 😢 😭 😦 😧 😨 😩 🤯 😬 😰 😱 😳 🤪 😵 😡 😠 🤬 😷 🤒 🤕 🤢 🤮 🤧 😇 🤠 🤡 🤥 🤫 🤭 🧐 🤓 😈 👿 👹 👺 💀 👻 👽 🤖 💩 😺 😸 😹 😻 😼 😽 🙀 😿 😾"
         .split(' ').map(v=>({text:v}));
@@ -57,7 +63,8 @@ class Chat extends Component {
             placeholder="请输入"
             value={this.state.data}
             onChange={(v)=>this.setState({ data: v })}
-            extra={<span onClick={this.onSubmit}>提交</span>}
+            extra={<div><span onClick={this.toggleEmoji}>😀</span>
+            <span onClick={this.onSubmit}>提交</span></div>}
           ></InputItem>
             </List>
             <div>
@@ -66,7 +73,7 @@ class Chat extends Component {
                 )}
             </div>
 
-                <Grid data={emojiList} columnNum={8} isCarousel onClick={_el => {this.setState({ data: this.state.data + _el.text });}} carouselMaxRow={5}/>
+               {toggleEmoji && <Grid data={emojiList} columnNum={8} isCarousel onClick={_el => {this.setState({ data: this.state.data + _el.text });}} carouselMaxRow={5}/>}
 
         </div> )
     }
