@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { List } from '../../../node_modules/antd-mobile';
+import { List, Badge } from '../../../node_modules/antd-mobile';
 
 @connect(state=>state)
 class Msg extends Component {
@@ -8,6 +8,11 @@ class Msg extends Component {
         super(props);
         this.state = {  }
     }
+
+    getLastItem(items){
+       return items[items.length-1];
+    }
+    
     render() { 
         console.log(this.props);
         const Item = List.Item;
@@ -15,25 +20,41 @@ class Msg extends Component {
         const { chat:{chatmsg,users},  user:{_id:userId} } = this.props;
         if(chatmsg.length === 0) return <h1>消息列表</h1>;
         let chatDict  = {};
+        let unreadList = {};
         chatmsg.forEach(chat => {
             if(chat.to === userId){
                 const targetId = chat.from;
-                if(!chatDict[targetId] ||
-                    chat.createTime>chatDict[targetId].createTime
-                ) {
-                    chatDict[targetId] = chat 
+                chatDict[targetId] = chatDict[targetId]?
+                           [...chatDict[targetId],chat]:[chat];
+                if(!chat.read){
+                    unreadList[targetId] = unreadList[targetId]?
+                                unreadList[targetId]+1:1;
                 }
             }
         });
         console.log(chatDict);
+
+        const sortUserList = Object.keys(chatDict).sort((a,b) =>{
+            const charAItem = this.getLastItem(chatDict[a]);
+            const charBItem = this.getLastItem(chatDict[b]);
+            return  charBItem.createTime - charAItem.createTime;
+        });
+        
         return ( <div>
             <List>
                 {
-                    Object.keys(chatDict).map(id => (
-                            <Item multipleLine thumb={require(`../images/avatar/${users[id].avatar}.png`)} extra={users[id].company}>
-                                {chatDict[id].content} <Brief>{users[id].user}</Brief>
+                    sortUserList.map(id => { 
+                        const item = this.getLastItem(chatDict[id]); 
+                        console.log(item); 
+                        return (
+                            <Item 
+                                multipleLine
+                                onClick={()=>this.props.history.push(`/chat/${id}`)}
+                                thumb={require(`../images/avatar/${users[id].avatar}.png`)}
+                                extra={<Badge text={unreadList[id]}></Badge>}>
+                                {item.content} <Brief>{users[id].user}</Brief>
                             </Item>
-                    ))
+                    )})
                 }
             </List>
         </div> );

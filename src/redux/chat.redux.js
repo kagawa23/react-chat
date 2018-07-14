@@ -21,7 +21,8 @@ export function chat(state=initState,action) {
             const n = (action.userId === action.payload.to)? 1: 0;
             return {...state, chatmsg:[...state.chatmsg,action.payload],unread:state.unread+n};
         case MSG_READ:
-            return state;
+            const { from, to, num } = action.payload;
+            return {...state, chatmsg:state.chatmsg.map((v) => ({...v,read:v.from ===from && v.to===to?true:v.read}) ),unread:state.unread-num};;
         default:
             return state;
     }
@@ -35,6 +36,12 @@ function chatRecv(data, userId) {
     return {type:MSG_RECV,payload:data, userId}
 }
 
+function chatRead(from,to, num) {
+    return {type:MSG_READ,payload:{from,to,num}}
+}
+
+
+
 export function sendMsg(from,to, msg){
     return (dispatch) => {
         socket.emit('clientmsg',{from,to,msg})
@@ -47,6 +54,23 @@ export function recvMsg(){
             const {user:{ _id }} = getState();
             dispatch(chatRecv(data, _id));
         })
+    }
+}
+
+export function readMsg(from) {
+    return (dispatch,getState) => {
+        axios.post('/user/chatlist', {from})
+        .then(reply=>{
+            const { status, data:{err,data}} = reply;
+            if(status == 200 && err == 0){
+                const { nModified:num } = data;
+                const {user:{ _id:to }} = getState();
+                dispatch(chatRead(from,to,num));
+            }
+            console.log(reply)
+        }).catch(er=>{
+            console.log(er);
+        });
     }
 }
 

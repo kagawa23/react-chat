@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {List , InputItem, NavBar,Icon, Grid} from 'antd-mobile';
-import { getChatList,sendMsg,recvMsg, getChatId } from '../../redux/chat.redux';
+import { getChatList,sendMsg,recvMsg, getChatId, readMsg } from '../../redux/chat.redux';
 import { connect } from 'react-redux';
 import '../../index.css'
 const Item = List.Item;
 
-@connect(state=>state,{getChatList,sendMsg,recvMsg})
+@connect(state=>state,{getChatList,sendMsg,recvMsg,readMsg })
 class Chat extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +19,13 @@ class Chat extends Component {
             this.props.getChatList();
             this.props.recvMsg();
         }
+
+    }
+
+
+    componentWillUnmount(){
+        const userId = this.props.match.params.user;
+        this.props.readMsg(userId);
     }
 
     onSubmit(){

@@ -43,6 +43,19 @@ Router.get('/chatlist',(req,resp) => {
     })
 })
 
+Router.post('/chatlist',(req,resp) =>{
+    const { userId:to } = req.cookies;
+    const { from } = req.body;
+    console.log(from+' '+to)
+    chatModel.update({from,to},{"$set":{read:true}},{"multi":true},(err,data)=>{
+        console.log(data);
+        if(!err){
+            resp.json({err:0,data})
+        }
+       // console.log(data)
+    })
+});
+
 Router.get('/info',(req,res)=>{
     const { userId} = req.cookies;
     if(!userId){
